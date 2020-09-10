@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: 'EMI Calculator Service API'
+  version: '1.0'
+  description: 'API specification of the EMI calculator microservice.'
+  termsOfService: 'urn:tos'
+  contact:
+    name: 'Nitish Kashyap & Hari Shankar'
+    email: 'nitish.kashyap44@gmail.com'
+    url: 'emicalculator@azure.com'
+tags:
+  - name: EMICalculatorRestController
+    description: 'Provides an endpoint to get EMI calculator information.'
+paths:
+  /emi-calculator-service:
+    post:
+      operationId: getEmiCalculatorUsingPOST
+      summary: 'Retrieves EMI information.'
+      tags:
+        - EMICalculatorRestController
+      responses:
+        '200':
+          description: "OK - Get EMI Information succesfull"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmiCalculatorServiceResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/EmiCalculatorServiceResponse'
+        '201':
+          description: "Created - The request has been fulfilled, resulting in the creation of a new resource."
+        '204':
+          description: "No Content - The emi calculator request was successfully completed, but the response intentionally contains no data."
+        '400':
+          description: "Bad Request - The input data of the POST body is not valid. The response will give a hint about the invalid data."
+        '401':
+          description: "Not authorized - The request was not executed because you are not a authorized user to see this
+            resource or a URL configured as HTTPS was only called with HTTP."
+        '403':
+          description: "Forbidden - Accessing the resource you were trying to reach is forbidden."
+        '404':
+          description: 'Not Found - The resource you were trying to reach is not found.'
+        '500':
+          description: 'Internal server error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmiCalculatorServiceRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/EmiCalculatorServiceRequest'
+        required: true
+components:
+  schemas:
+    EmiCalculatorRequest:
+      type: object
+      title: EmiCalculatorRequest
+      properties:
+        loanAmount:
+          type: number
+          title: loanAmount
+          minimum: 99
+          maximum: 99999999
+          example: 50000
+        rateOfInterestInPercent:
+          type: number
+          title: rateOfInterestInPercent
+          minimum: 0.1
+          maximum: 100
+          example: 5
+        duration:
+          $ref: '#/components/schemas/Duration'
+        loanRequestedCurrency:
+          type: string
+          title: loanRequestedCurrency
+          example: INR
+        loanPayableCurrency:
+          type: array
+          title: loanPayableCurrency
+          example:
+            - EUR
+            - USD
+          items:
+            type: string
+            minLength: 3
+            maxLength: 3
+            pattern: '^[A-Z]{3}$'  
+        specialCustomer:
+          type: boolean
+          title: specialCustomer
+          example: false
+      required:
+        - loanAmount
+        - rateOfInterestInPercent
+        - loanRequestedCurrency
+        - specialCustomer
+    Duration:
+      type: object
+      title: Duration
+      properties:
+        numberOfDays:
+          type: integer
+          title: numberOfDays
+          description: 'It denotes total number of pieces in the shipment.'
+          format: int32
+          example: 100
+          minimum: 1
+        numberOfMonths:
+          type: number
+          title: numberOfMonths
+          example: 1000
+        numberOfYears:
+          type: number
+          title: numberOfYears
+          minimum: 0
+          maximum: 60
+          exclusiveMinimum: false
+    EmiCalculatorServiceRequest:
+      type: object
+      title: EmiCalculatorServiceRequest
+      properties:
+        emiCalculatorRequest:
+          $ref: '#/components/schemas/EmiCalculatorRequest'
+      required:
+        - emiCalculatorRequest
+    EmiCalculatorServiceResponse:
+      type: object
+      title: EmiCalculatorServiceResponse
+      properties:
+        emiCalculatorResponse:
+          $ref: '#/components/schemas/EmiCalculatorResponse'
+      required:
+        - emiCalculatorResponse
+    EmiCalculatorResponse:
+      type: object
+      title: EmiCalculatorResponse
+      properties:
+        emiDetails:
+          type: object
+          $ref: '#/components/schemas/EmiDetails'
+    EmiDetails:
+      type: object
+      title: EmiDetails
+      properties:
+        emi:
+          type: array
+          items:
+            $ref: '#/components/schemas/EMI'
+      required:
+        - returnCodeNumber
+    EMI:
+      type: object
+      title: RootCause
+      properties:
+        emiAmountInLoanPayableCurr:
+          type: string
+          title: emiAmountInLoanPayableCurr
+        TotalpayableamountInLoanPayableCurr:
+          type: string
+          title: TotalpayableamountInLoanPayableCurr
+        totalinterestInLoanPayableCurr:
+          type: string
+          
