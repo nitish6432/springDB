@@ -12,7 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * it by using @EnableFeignClients annotation on 
  * the appropriate package where the client proxies are defined.
 
- * @author kanja
+ * @author Nitish Kashyap
  *
  */
 @SpringBootApplication
